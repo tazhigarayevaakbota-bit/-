@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Студент үлгерімі</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4ff;
+  padding: 20px;
+  margin: 0;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+}
+h1 { text-align: center; color: #4f46e5; }
+input, button {
+  padding: 12px;
+  margin: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+button {
+  background: #4f46e5;
+  color: white;
+  cursor: pointer;
+}
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+.result {
+  background: #e0e7ff;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>📚 Студент үлгерімі</h1>
+
+<input id="subject" placeholder="Пән атауы">
+<input id="grade" type="number" placeholder="Баға (0–100)">
+<button onclick="addSubject()">+ Пәнді қосу</button>
+
+<table>
+<thead>
+<tr>
+<th>Пән</th>
+<th>Баға</th>
+<th>Өшіру</th>
+</tr>
+</thead>
+<tbody id="list"></tbody>
+</table>
+
+<div class="result">
+<h2>Орташа балл: <span id="average">0</span></h2>
+<p id="level">Бағаларыңызды енгізіңіз</p>
+</div>
+</div>
+
+<script>
+let subjects = [];
+
+function addSubject() {
+  let name = document.getElementById("subject").value.trim();
+  let grade = document.getElementById("grade").value;
+
+  if (name === "") {
+    alert("Пән атауын енгізіңіз!");
+    return;
+  }
+
+  if (grade === "" || grade < 0 || grade > 100) {
+    alert("Баға 0 мен 100 аралығында болуы керек!");
+    return;
+  }
+
+  subjects.push({name, grade: Number(grade)});
+  document.getElementById("subject").value = "";
+  document.getElementById("grade").value = "";
+  render();
+}
+
+function removeSubject(index) {
+  subjects.splice(index, 1);
+  render();
+}
+
+function render() {
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  subjects.forEach((item, index) => {
+    list.innerHTML += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.grade}</td>
+        <td><button onclick="removeSubject(${index})">🗑</button></td>
+      </tr>`;
+  });
+
+  let average = subjects.length
+    ? subjects.reduce((sum, item) => sum + item.grade, 0) / subjects.length
+    : 0;
+
+  document.getElementById("average").textContent = average.toFixed(1);
+
+  let level = "";
+  if (average >= 90) level = "Өте жақсы 🏆";
+  else if (average >= 75) level = "Жақсы 👍";
+  else if (average >= 50) level = "Қанағаттанарлық";
+  else if (subjects.length) level = "Үлгерімді жақсарту қажет";
+
+  document.getElementById("level").textContent = level;
+}
+</script>
+
+</body>
+</html>
